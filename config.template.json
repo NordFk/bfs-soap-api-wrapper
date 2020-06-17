@@ -1,0 +1,10 @@
+{
+  "bricknode": {
+      "wsdl": "https://bfs1.bricknode.com/ACCOUNT_NAME_HERE/api/bfsapi.asmx?WSDL",
+      "credentials": {
+        "username": "",
+        "password": ""
+      },
+      "identifier": ""
+    }
+}
