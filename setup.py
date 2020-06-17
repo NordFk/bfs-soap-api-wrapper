@@ -13,7 +13,10 @@ setup(name='bfs',
       url='http://bitbucket.org/nordfk/bfs-soap-api-wrapper',
       author='Joakim Platbarzdis',
       author_email='joakim.platbarzdis@nordfk.se',
-      packages=['bfs'],
+      packages=[
+          'bfs',
+          'bfs/constants'
+      ],
       install_requires=[
           'zeep',
       ],
