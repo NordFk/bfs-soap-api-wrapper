@@ -95,11 +95,12 @@ class Bfs:
         """
         This method aligns the expected object names with the method that will use it. Eg. CreateAccount uses Account as
         object, while the UpdateAccount method uses UpdateAccount objects and arrays thereof.
+        CreateMessage, on the other hand, uses CreateMessage as object.
         :param method:
         :return:
         """
-        # "Create" entities are not prefixed with "Create"
-        class_name = re.sub('^%s' % 'Create', '', method)
+        # "Create" entities are not prefixed with "Create". Unless, of course, it is CreateMessage
+        class_name = re.sub('^%s' % 'Create', '', method) if not 'CreateMessage' else method
         return class_name
 
     def get_entity(self, method: str, entity: dict = None, skip_validation_for_empty_values: bool = False):
