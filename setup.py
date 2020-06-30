@@ -7,7 +7,7 @@ def readme():
 
 
 setup(name='bfs',
-      version='0.1',
+      version='0.2',
       description='Bricknode Financial Systems SOAP API wrapper',
       long_description=readme(),
       url='http://bitbucket.org/nordfk/bfs-soap-api-wrapper',
