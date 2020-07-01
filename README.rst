@@ -1,7 +1,7 @@
 BFS SOAP API wrapper
 ====================
 
-Simply specify the method you are interested in. Currently supporting ``get`` and ``update`` requests.
+Simply specify the method you are interested in.
 
 Instantiate client
 ------------------
@@ -95,3 +95,18 @@ persisted.
                         fields={
                             'Email': True
                         })
+
+bfs.delete
+----------
+
+This can be used for deleting POAs and Allocation Profiles. Not supporting DeleteFile, which requires a FileInfoDelete
+object as input.
+
+.. code::
+
+    brick_ids = [
+        '3038fc58-731b-47c4-ae55-0aada120e200',
+        'a018c8f1-f3f1-4ac5-b392-a33e2167a17e'
+    ]
+
+    result = bfs.delete(bfs.methods.DELETE_POAS, brick_ids=brick_ids)

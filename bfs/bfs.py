@@ -10,7 +10,6 @@ from .constants import methods
 
 
 class Bfs:
-
     client = None
     factory = None
     credentials = None
@@ -100,7 +99,7 @@ class Bfs:
         :return:
         """
         # "Create" entities are not prefixed with "Create". Unless, of course, it is CreateMessage
-        class_name = re.sub('^%s' % 'Create', '', method) if not 'CreateMessage' else method
+        class_name = re.sub('^%s' % 'Create', '', method) if method not in ['CreateMessage'] else method
         return class_name
 
     def get_entity(self, method: str, entity: dict = None, skip_validation_for_empty_values: bool = False):
@@ -244,6 +243,25 @@ class Bfs:
         })
 
         return result if raw_result else self.get_response_rows(zeep.helpers.serialize_object(result), method)
+
+    def delete(self, method: str, brick_ids: list = None):
+        """
+        Makes a call to the API, preparing the request and default fields (true) and adds+transforms the arguments
+        :param method: The Bricknode API method name
+        :param brick_ids: The brickIds of the entities we want to delete
+        :param skip_validation_for_empty_values: Set this to True to ignore validation that required values are set
+        :param raw_result: Set to True to get the raw result back (optional)
+        :return:
+        """
+        query_method = getattr(self.client.service, method)
+
+        result = query_method({
+            'Credentials': self.credentials,
+            'identify': self.identifier,
+            'BrickIds': self.__argument_transform(brick_ids)
+        })
+
+        return result
 
     @staticmethod
     def get_response_rows(result: dict, method: str):
