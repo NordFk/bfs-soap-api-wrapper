@@ -31,10 +31,6 @@ class TestBfsEntities(TestCase):
                     method = operation.name
                     if method.startswith('Create'):
 
-                        # CreateFile is not supported as it uses FileInfoUpload objects
-                        if method in ['CreateFile']:
-                            continue
-
                         entity = bfs.get_entity(operation.name)
 
                         # Only keep "Create" from a select subset of entities
@@ -50,12 +46,16 @@ class TestBfsEntities(TestCase):
                         if expected not in [
                             'InsurancePolicy',
                             'ManualExecutionInterface',
-                            'RecurringOrderTemplatesAutogiro'
+                            'RecurringOrderTemplatesAutogiro',
+                            'File'
                         ]:
                             expected = class_name[:-3] + 'y' if class_name.endswith('ies') else class_name[:-1]
 
                         # Fix Inconsistent casing and plural form not at end
                         expected = 'RecurringOrderTemplateAutoGiro' if expected == 'RecurringOrderTemplatesAutogiro' else expected
+
+                        # Fix completely different entity type than method name "CreateFile"
+                        expected = 'FileInfoUpload' if expected == 'File' else expected
 
                         self.assertEqual(expected, entity.__class__.__name__)
 
