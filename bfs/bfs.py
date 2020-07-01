@@ -98,13 +98,15 @@ class Bfs:
         :param method:
         :return:
         """
-        # "Create" entities are not prefixed with "Create". Unless, of course, it is CreateMessage
+        # "Create" entities are not prefixed with "Create". Unless, of course, it is CreateMessage, CreateNote, or
+        # CreateTask
         method = re.sub('^%s' % 'Create', '', method) if method not in [
             'CreateMessages',
             'CreateNotes',
             'CreateTasks'
         ] else method
 
+        # "Update" entities are always prefix with "Update". Unless, of course, it is UpdateAllocationProfiles
         method = re.sub('^%s' % 'Update', '', method) if method in [
             'UpdateAllocationProfiles'
         ] else method
@@ -115,6 +117,9 @@ class Bfs:
 
         # Inconsistent casing and plural form not at end
         method = 'RecurringOrderTemplateAutoGiro' if method == 'RecurringOrderTemplatesAutogiro' else method
+
+        # Completely different entity type
+        method = 'FileInfoUpload' if method == 'File' else method
 
         return method
 
