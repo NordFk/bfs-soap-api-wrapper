@@ -18,48 +18,62 @@ class TestBfsEntities(TestCase):
         if "_demo" not in self.config['bricknode']['wsdl']:
             raise Warning('You are running integration tests with a production account')
 
-    def test_create_entities(self):
+    def test_get_create_entities(self):
+        """
+        A test iterating over the services and methods available in the wsdl, trying to instantiate the Create entities
+        via the help method bfs.get_entity
+        """
         bfs = Bfs(self.config)
 
+        # Let's get the services available
         for service in bfs.client.wsdl.services.values():
             for port in service.ports.values():
                 operations = sorted(
                     port.binding._operations.values(),
                     key=operator.attrgetter('name'))
 
+                # Here are the methods
                 for operation in operations:
                     method = operation.name
                     if method.startswith('Create'):
 
+                        # Method under test
                         entity = bfs.get_entity(operation.name)
 
+                        # As our expectations vary a bit due do the inconsistent implementation of the BFS SOAP API,
+                        # we mimic the expected outcome here
+
                         # Only keep "Create" from a select subset of entities
-                        class_name = re.sub('^%s' % 'Create', '', method) if method not in [
+                        expected = re.sub('^%s' % 'Create', '', method) if method not in [
                             'CreateMessages',
                             'CreateNotes',
                             'CreateTasks'
                         ] else method
 
-                        expected = class_name
-
-                        # Handle plural forms (if needed)
+                        # Handle plural forms for most entities
                         if expected not in [
                             'InsurancePolicy',
                             'ManualExecutionInterface',
                             'RecurringOrderTemplatesAutogiro',
                             'File'
                         ]:
-                            expected = class_name[:-3] + 'y' if class_name.endswith('ies') else class_name[:-1]
+                            expected = expected[:-3] + 'y' if expected.endswith('ies') else expected[:-1]
 
                         # Fix Inconsistent casing and plural form not at end
-                        expected = 'RecurringOrderTemplateAutoGiro' if expected == 'RecurringOrderTemplatesAutogiro' else expected
+                        expected = 'RecurringOrderTemplateAutoGiro' \
+                            if expected == 'RecurringOrderTemplatesAutogiro' \
+                            else expected
 
                         # Fix completely different entity type than method name "CreateFile"
                         expected = 'FileInfoUpload' if expected == 'File' else expected
 
                         self.assertEqual(expected, entity.__class__.__name__)
 
-    def test_update_entities(self):
+    def test_get_update_entities(self):
+        """
+        A test iterating over the services and methods available in the wsdl, trying to instantiate the Update entities
+        via the help method bfs.get_entity
+        """
         bfs = Bfs(self.config)
 
         # Let's get the services available
@@ -73,21 +87,24 @@ class TestBfsEntities(TestCase):
                 for operation in operations:
                     method = operation.name
                     if method.startswith('Update'):
+
+                        # Method under test
                         entity = bfs.get_entity(method)
 
+                        # As our expectations vary a bit due do the inconsistent implementation of the BFS SOAP API,
+                        # we mimic the expected outcome here
+
                         # Remove "Update" from a select subset of entities
-                        class_name = re.sub('^%s' % 'Update', '', method) if method in [
+                        expected = re.sub('^%s' % 'Update', '', method) if method in [
                             'UpdateAllocationProfiles'
                         ] else method
 
-                        expected = class_name
-
-                        # Handle plural forms (if needed)
+                        # Handle plural forms for most entities
                         if expected not in [
                             'UpdateRecurringOrderTemplateAutoGiro',
                             'UpdateWhiteLabel'
                         ]:
-                            expected = class_name[:-3] + 'y' if class_name.endswith('ies') else class_name[:-1]
+                            expected = expected[:-3] + 'y' if expected.endswith('ies') else expected[:-1]
 
                         # Fix Casing anomalies
                         expected = 'UpdateFundCompany' if expected == 'UpdateFundcompany' else expected
