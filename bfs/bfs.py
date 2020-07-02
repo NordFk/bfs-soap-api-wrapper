@@ -98,9 +98,30 @@ class Bfs:
         :param method:
         :return:
         """
-        # "Create" entities are not prefixed with "Create". Unless, of course, it is CreateMessage
-        class_name = re.sub('^%s' % 'Create', '', method) if method not in ['CreateMessage'] else method
-        return class_name
+        # "Create" entities are not prefixed with "Create". Unless, of course, it is CreateMessage, CreateNote, or
+        # CreateTask
+        method = re.sub('^%s' % 'Create', '', method) if method not in [
+            'CreateMessages',
+            'CreateNotes',
+            'CreateTasks'
+        ] else method
+
+        # "Update" entities are always prefix with "Update". Unless, of course, it is UpdateAllocationProfiles
+        method = re.sub('^%s' % 'Update', '', method) if method in [
+            'UpdateAllocationProfiles'
+        ] else method
+
+        # Casing anomalies
+        method = 'UpdateFundCompanies' if method == 'UpdateFundcompanies' else method
+        method = 'UpdateFundEntities' if method == 'UpdateFundentities' else method
+
+        # Inconsistent casing and plural form not at end
+        method = 'RecurringOrderTemplateAutoGiro' if method == 'RecurringOrderTemplatesAutogiro' else method
+
+        # Completely different entity type
+        method = 'FileInfoUpload' if method == 'File' else method
+
+        return method
 
     def get_entity(self, method: str, entity: dict = None, skip_validation_for_empty_values: bool = False):
         """
@@ -114,7 +135,10 @@ class Bfs:
         try:
             entity_method = getattr(self.factory, class_name)
         except zeep.exceptions.LookupError:
-            entity_method = getattr(self.factory, class_name[:-1])
+            try:
+                entity_method = getattr(self.factory, class_name[:-1])
+            except zeep.exceptions.LookupError:
+                entity_method = getattr(self.factory, class_name[:-3] + "y")
 
         _entity = entity_method()
         if skip_validation_for_empty_values:
