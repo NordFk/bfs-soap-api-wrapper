@@ -71,8 +71,6 @@ posting an entire object in with valid values, even though you most
 likely only want to update a few completely different ones. It is then
 mostly helpful to ``get`` the object and then modify it.
 
-Since the results coming back is an ``OrderedDict``, you want to make
-it an object before sending it back for updating.
 
 .. code::
 
@@ -80,7 +78,7 @@ it an object before sending it back for updating.
         "BrickIds": ["6e12ec5a-89e0-4c63-a04c-32141ef90a04"]
     }))
 
-    update_person = bfs.ordered_dict_to_object(persons[0])
+    update_person = persons[0]
 
 You can then update the property you want to change, remember to define
 the fields you want affected. Any other fields updated will not be
