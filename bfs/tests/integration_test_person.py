@@ -34,8 +34,7 @@ class IntegrationTestPerson(TestCase):
         # Method under test. Using the skip_validation_for_empty_values flag we can create a minimal object to store
         created_persons = bfs.create(bfs.methods.CREATE_PERSONS, entities=[person], skip_validation_for_empty_values=True)
 
-        # Let's take the only person in the list, make an object
-        created_person = bfs.ordered_dict_to_object(created_persons[0])
+        created_person = created_persons[0]
 
         # Clean up by removing the new person via the inactivate persons call
         bfs.update(bfs.methods.INACTIVATE_PERSONS, entities=[created_person])
@@ -81,8 +80,7 @@ class IntegrationTestPerson(TestCase):
         # Method under test
         created_persons = bfs.create(bfs.methods.CREATE_PERSONS, entities=[person])
 
-        # Let's take the only person in the list, make an object
-        created_person = bfs.ordered_dict_to_object(created_persons[0])
+        created_person = created_persons[0]
 
         # Clean up by removing the new person via the inactivate persons call
         bfs.update(bfs.methods.INACTIVATE_PERSONS, entities=[created_person])
