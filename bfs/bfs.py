@@ -207,7 +207,8 @@ class Bfs:
             'Fields': _fields
         })
 
-        return result if raw_result else self.get_response_rows(zeep.helpers.serialize_object(result), method)
+        return result if raw_result \
+            else self.ordered_dict_to_object(self.get_response_rows(zeep.helpers.serialize_object(result), method))
 
     def create(self, method: str, entities: list = None, skip_validation_for_empty_values: bool = False,
                raw_result=False):
@@ -233,7 +234,8 @@ class Bfs:
             'Entities': self.get_entity_array(method, _entities)
         })
 
-        return result if raw_result else self.get_response_rows(zeep.helpers.serialize_object(result), method)
+        return result if raw_result \
+            else self.ordered_dict_to_object(self.get_response_rows(zeep.helpers.serialize_object(result), method))
 
     def update(self, method: str, entities: list = None, fields: dict = None,
                skip_validation_for_empty_values: bool = False, raw_result=False):
@@ -266,7 +268,8 @@ class Bfs:
             'Fields': _fields
         })
 
-        return result if raw_result else self.get_response_rows(zeep.helpers.serialize_object(result), method)
+        return result if raw_result \
+            else self.ordered_dict_to_object(self.get_response_rows(zeep.helpers.serialize_object(result), method))
 
     def delete(self, method: str, brick_ids: list = None):
         """
