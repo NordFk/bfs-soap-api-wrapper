@@ -37,8 +37,10 @@ class TestBfsEntities(TestCase):
                     method = operation.name
                     if method.startswith('Create'):
 
+                        class_name = Bfs.get_entity_class_name(operation.name)
+
                         # Method under test
-                        entity = bfs.get_entity(operation.name)
+                        entity = bfs.get_entity(class_name)
 
                         # As our expectations vary a bit due do the inconsistent implementation of the BFS SOAP API,
                         # we mimic the expected outcome here
@@ -66,6 +68,7 @@ class TestBfsEntities(TestCase):
 
                         # Fix completely different entity type than method name "CreateFile"
                         expected = 'FileInfoUpload' if expected == 'File' else expected
+                        expected = 'SuperTransaction' if expected == 'BusinessTransaction' else expected
 
                         self.assertEqual(expected, entity.__class__.__name__)
 
@@ -88,8 +91,10 @@ class TestBfsEntities(TestCase):
                     method = operation.name
                     if method.startswith('Update'):
 
+                        class_name = Bfs.get_entity_class_name(operation.name)
+
                         # Method under test
-                        entity = bfs.get_entity(method)
+                        entity = bfs.get_entity(class_name)
 
                         # As our expectations vary a bit due do the inconsistent implementation of the BFS SOAP API,
                         # we mimic the expected outcome here
