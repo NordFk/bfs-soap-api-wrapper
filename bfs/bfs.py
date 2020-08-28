@@ -90,7 +90,7 @@ class Bfs:
         return args_method()
 
     @staticmethod
-    def __get_entity_class_name(method: str):
+    def get_entity_class_name(method: str):
         """
         This method aligns the expected object names with the method that will use it. Eg. CreateAccount uses Account as
         object, while the UpdateAccount method uses UpdateAccount objects and arrays thereof.
@@ -120,18 +120,18 @@ class Bfs:
 
         # Completely different entity type
         method = 'FileInfoUpload' if method == 'File' else method
+        method = 'SuperTransactions' if method == 'BusinessTransactions' else method
 
         return method
 
-    def get_entity(self, method: str, entity: dict = None, skip_validation_for_empty_values: bool = False):
+    def get_entity(self, class_name: str, entity: dict = None, skip_validation_for_empty_values: bool = False):
         """
         Gets entity object based on method
-        :param method: The method used to determine what type to use
+        :param class_name: The class name of the entity
         :param entity: Optional entity object to convert
         :param skip_validation_for_empty_values: Set this to True to ignore validation that required values are set
         :return:
         """
-        class_name = self.__get_entity_class_name(method)
         try:
             entity_method = getattr(self.factory, class_name)
         except zeep.exceptions.LookupError:
@@ -151,14 +151,13 @@ class Bfs:
 
         return _entity
 
-    def get_entity_array(self, method: str, entities: list):
+    def get_entity_array(self, class_name: str, entities: list):
         """
-        Gets an entity array based on method
-        :param method:
+        Gets an entity array based on class_name
+        :param class_name:
         :param entities:
         :return:
         """
-        class_name = self.__get_entity_class_name(method)
         try:
             entity_array_method = getattr(self.factory, "ArrayOf" + class_name)
         except zeep.exceptions.LookupError:
@@ -224,14 +223,14 @@ class Bfs:
         _entities = []
         for entity in entities:
             _entities.append(entity if type(entity) != dict
-                             else self.get_entity(method, entity, skip_validation_for_empty_values))
+                             else self.get_entity(self.get_entity_class_name(method), entity, skip_validation_for_empty_values))
 
         query_method = getattr(self.client.service, method)
 
         result = query_method({
             'Credentials': self.credentials,
             'identify': self.identifier,
-            'Entities': self.get_entity_array(method, _entities)
+            'Entities': self.get_entity_array(self.get_entity_class_name(method), _entities)
         })
 
         return result if raw_result \
@@ -257,14 +256,14 @@ class Bfs:
         _entities = []
         for entity in entities:
             _entities.append(entity if type(entity) != dict
-                             else self.get_entity(method, entity, skip_validation_for_empty_values))
+                             else self.get_entity(self.get_entity_class_name(method), entity, skip_validation_for_empty_values))
 
         query_method = getattr(self.client.service, method)
 
         result = query_method({
             'Credentials': self.credentials,
             'identify': self.identifier,
-            'Entities': self.get_entity_array(method, _entities),
+            'Entities': self.get_entity_array(self.get_entity_class_name(method), _entities),
             'Fields': _fields
         })
 
@@ -306,7 +305,7 @@ class Bfs:
                 return result['Result'][response_field]
 
         if 'Entities' in result.keys() and result['Entities'] is not None:
-            class_name = Bfs.__get_entity_class_name(method)
+            class_name = Bfs.get_entity_class_name(method)
             response_field = class_name \
                 if class_name in result['Entities'] \
                 else class_name[:-1]
