@@ -98,12 +98,13 @@ class Bfs:
         :param method:
         :return:
         """
-        # "Create" entities are not prefixed with "Create". Unless, of course, it is CreateMessage, CreateNote, or
-        # CreateTask
+        # "Create" entities are not prefixed with "Create". Pattern changed for newer additions, omitted below.
         method = re.sub('^%s' % 'Create', '', method) if method not in [
             'CreateMessages',
             'CreateNotes',
-            'CreateTasks'
+            'CreateTasks',
+            'CreateTradingVenues',
+            'CreateWebhookSubscriptions'
         ] else method
 
         # "Update" entities are always prefix with "Update". Unless, of course, it is UpdateAllocationProfiles
