@@ -49,7 +49,9 @@ class TestBfsEntities(TestCase):
                         expected = re.sub('^%s' % 'Create', '', method) if method not in [
                             'CreateMessages',
                             'CreateNotes',
-                            'CreateTasks'
+                            'CreateTasks',
+                            'CreateTradingVenues',
+                            'CreateWebhookSubscriptions'
                         ] else method
 
                         # Handle plural forms for most entities
