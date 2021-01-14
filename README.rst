@@ -63,6 +63,31 @@ Using the :code:`skip_validation_for_empty_values` flag we can create a minimal 
     created_persons = bfs.create(bfs.methods.CREATE_PERSONS, entities=[person], skip_validation_for_empty_values=True)
 
 
+bfs.execute
+-----------
+The :code:`execute` method is added for code clarity, it has the same internal requirements as :code:`create`
+
+.. code::
+
+    transfer_orders = [{
+            'FromAccountBrickId': 'fbce4894-5f3c-49c3-87c4-62e8f3dae52f',
+            'ToAccountBrickId': 'ef403f20-dfa7-4930-9e65-409d744856f8',
+            'Units': 607500,
+            'Comment': 'My comment',
+            'TradeDate': 2021-01-11,
+            'SettlementDate': 2021-01-13,
+            'ValueDate': 2021-01-11,
+            'InstrumentBrickId': '142f5c35-26b3-4697-87ac-81e672280b17',
+            'OverrideOwnershipChangeValidation': True
+        }]
+
+    created_transfer_orders = bfs.create(bfs.methods.CREATE_INTERNAL_INSTRUMENT_TRANSFER_ORDERS, entities=transfer_orders,
+                                 skip_validation_for_empty_values=True)
+
+    entities = list(map(lambda o: {'InternalTransferOrderBrickId': o['BrickId']}, created_transfer_orders))
+    result = bfs.execute(bfs.methods.EXECUTE_INTERNAL_TRANSFER_ORDERS, entities=entities)
+
+
 bfs.update
 ----------
 
@@ -75,7 +100,7 @@ mostly helpful to ``get`` the object and then modify it.
 .. code::
 
     persons = bfs.get(bfs.methods.GET_PERSONS, args={
-        "BrickIds": ["6e12ec5a-89e0-4c63-a04c-32141ef90a04"]
+        'BrickIds': ['6e12ec5a-89e0-4c63-a04c-32141ef90a04']
     }))
 
     update_person = persons[0]
