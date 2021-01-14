@@ -210,6 +210,17 @@ class Bfs:
         return result if raw_result \
             else self.ordered_dict_to_object(self.get_response_rows(zeep.helpers.serialize_object(result), method))
 
+    def execute(self, method: str, entities: list = None, skip_validation_for_empty_values: bool = False):
+        """
+        Makes a call to the API, preparing the request and default fields (true) and adds+transforms the arguments
+        :param method: The Bricknode API method name
+        :param entities: The entities we want to execute
+        :param skip_validation_for_empty_values: Set this to True to ignore validation that required values are set
+        :return:
+        """
+        return self.create(method=method, entities=entities,
+                           skip_validation_for_empty_values=skip_validation_for_empty_values, raw_result=True)
+
     def create(self, method: str, entities: list = None, skip_validation_for_empty_values: bool = False,
                raw_result=False):
         """
