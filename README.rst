@@ -74,9 +74,9 @@ The :code:`execute` method is added for code clarity, it has the same internal r
             'ToAccountBrickId': 'ef403f20-dfa7-4930-9e65-409d744856f8',
             'Units': 607500,
             'Comment': 'My comment',
-            'TradeDate': 2021-01-11,
-            'SettlementDate': 2021-01-13,
-            'ValueDate': 2021-01-11,
+            'TradeDate': '2021-01-11',
+            'SettlementDate': '2021-01-13',
+            'ValueDate': '2021-01-11',
             'InstrumentBrickId': '142f5c35-26b3-4697-87ac-81e672280b17',
             'OverrideOwnershipChangeValidation': True
         }]
