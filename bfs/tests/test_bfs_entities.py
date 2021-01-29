@@ -119,3 +119,22 @@ class TestBfsEntities(TestCase):
 
                         self.assertEqual(expected, entity.__class__.__name__)
 
+    def test_get_derived_entities(self):
+        """
+        A test getting a derived entity type based on the content of the entity
+        """
+        bfs = Bfs(self.config)
+
+        class_name = 'CurrencyExchangeOrder'
+
+        # Method under test
+        entity = bfs.get_entity(class_name, {
+            'BuyAmount': 0
+        })
+        self.assertEqual('CurrencyExchangeOrderBuy', entity.__class__.__name__)
+
+        # Method under test
+        entity = bfs.get_entity(class_name, {
+            'SellAmount': 0
+        })
+        self.assertEqual('CurrencyExchangeOrderSell', entity.__class__.__name__)
