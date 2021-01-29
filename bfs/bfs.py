@@ -125,6 +125,24 @@ class Bfs:
 
         return method
 
+    def _resolve_derived_class_from_abstract(self, class_name: str, entity: dict = None):
+        """
+        Resolved any derived classes that we would rather use, based on the contents of the entity
+        :param class_name: The class name of the potential abstract class
+        :param entity: The entity used for evaluation
+        :return:
+        """
+        if entity is None:
+            return
+
+        if class_name == 'CurrencyExchangeOrder':
+            if 'BuyAmount' in entity.keys():
+                return getattr(self.factory, 'CurrencyExchangeOrderBuy')
+            elif 'SellAmount' in entity.keys():
+                return getattr(self.factory, 'CurrencyExchangeOrderSell')
+
+        return None
+
     def get_entity(self, class_name: str, entity: dict = None, skip_validation_for_empty_values: bool = False):
         """
         Gets entity object based on method
@@ -140,6 +158,10 @@ class Bfs:
                 entity_method = getattr(self.factory, class_name[:-1])
             except zeep.exceptions.LookupError:
                 entity_method = getattr(self.factory, class_name[:-3] + "y")
+
+        derived_entity_method = self._resolve_derived_class_from_abstract(entity_method.name, entity)
+        if derived_entity_method is not None:
+            entity_method = derived_entity_method
 
         _entity = entity_method()
         if skip_validation_for_empty_values:
