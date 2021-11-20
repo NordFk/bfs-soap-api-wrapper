@@ -323,6 +323,23 @@ class Bfs:
 
         return result
 
+    def cancel(self, method: str, entity: dict = None):
+        """
+        Makes a call to the API using the entity as WorkflowTriggerDataEntity property 
+        :param method: The Bricknode API method name
+        :param entity: The WorkflowTriggerDataEntity we want to supply
+        :return:
+        """
+        query_method = getattr(self.client.service, method)
+
+        result = query_method({
+            'Credentials': self.credentials,
+            'identify': self.identifier,
+            'WorkflowTriggerDataEntity': entity
+        })
+
+        return result
+
     @staticmethod
     def get_response_rows(result: dict, method: str):
         """
