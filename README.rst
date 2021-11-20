@@ -133,3 +133,17 @@ object as input.
     ]
 
     result = bfs.delete(bfs.methods.DELETE_POAS, brick_ids=brick_ids)
+
+
+bfs.cancel
+----------
+
+Enables cancellation, adding an entity as WorkflowTriggerDataEntity of the cancel request.
+
+.. code::
+
+    entity = {
+        'OrderNo': 123456
+    }
+
+    result = bfs.cancel(bfs.methods.CURRENCY_EXCHANGE_ORDER__CANCEL, entity=entity)
